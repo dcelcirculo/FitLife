@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/validators.dart';
+import 'welcome_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key}); // Constructor
@@ -33,6 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController(); // Controlador de texto para el campo de confirmación de contraseña
 
+  // Método para validar el formulario en tiempo real
+  void _validateForm() {
+    final isValid = _formKey.currentState?.validate() ?? false;
+    _isFormValidNotifier.value = isValid;
+  }
+
   @override
   void dispose() {
     // Liberar recursos
@@ -41,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _isFormValidNotifier.dispose();
     super.dispose();
   }
 
@@ -64,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 20.0),
               const Text(
-                'Bienvenido',
+                'Bienvenido a Fit Life',
                 style: TextStyle(
                   fontSize: 28.0,
                   fontWeight: FontWeight.bold,
@@ -107,6 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         // Aquí se utiliza el validador importado desde validators.dart
                         validator: Validators.name,
+                        onChanged: (_) => _validateForm(),
                       ),
 
                       const SizedBox(height: 20.0),
@@ -121,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         validator: Validators.age,
+                        onChanged: (_) => _validateForm(),
                       ),
 
                       const SizedBox(height: 20.0),
@@ -136,6 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         // Aquí se utiliza el validador importado desde validators.dart
                         validator: Validators.email,
+                        onChanged: (_) => _validateForm(),
                       ),
 
                       const SizedBox(height: 20.0),
@@ -166,6 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Guardar la contraseña ingresada
                         onChanged: (value) {
                           _password = value;
+                          _validateForm();
                         },
                       ),
 
@@ -198,40 +210,68 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Guardar la confirmación de contraseña ingresada
                         onChanged: (value) {
                           _confirmPassword = value;
+                          _validateForm();
                         },
                       ),
 
                       const SizedBox(height: 30.0),
 
                       //Boton de inicio de sesión
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurpleAccent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            //Acción al presionar el botón
-                            if (_formKey.currentState!.validate()) {
-                              // Si el formulario es válido, mostrar un snackbar
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Inicio de sesión exitoso'),
-                                  backgroundColor: Colors.grey,
+                      ValueListenableBuilder<bool>(
+                        valueListenable: _isFormValidNotifier,
+                        builder: (context, isValid, child) {
+                          return SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: isValid
+                                    ? Colors.deepPurpleAccent
+                                    : Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                              );
-                              //Aquí llamarías a tu servicio de autenticación
-                            }
-                          },
-                          child: const Text(
-                            'Ingresar',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                        ),
+                              ),
+                              onPressed: isValid
+                                  ? () {
+                                      //Acción al presionar el botón
+                                      if (_formKey.currentState!.validate()) {
+                                        // Si el formulario es válido, mostrar un snackbar
+                                        // ScaffoldMessenger.of(
+                                        //   context,
+                                        // ).showSnackBar(
+                                        //   const SnackBar(
+                                        //     content: Text(
+                                        //       'Inicio de sesión exitoso',
+                                        //     ),
+                                        //     backgroundColor: Colors.grey,
+                                        //   ),
+                                        // );
+                                        // Navegar a la pantalla de bienvenida
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => WelcomeScreen(
+                                              name: _nameController.text,
+                                              age: _ageController.text,
+                                              email: _emailController.text,
+                                            ),
+                                          ),
+                                        );
+                                        //Aquí llamarías a tu servicio de autenticación
+                                      }
+                                    }
+                                  : null,
+                              child: const Text(
+                                'Ingresar',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
