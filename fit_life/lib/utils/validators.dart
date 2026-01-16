@@ -1,4 +1,44 @@
+/** Crear una aplicación de registro Fit Life, para un gimnasio, para registro de usuarios nuevos. Crear formulario de inscripción y la pantalla de bienvenida que muestre los datos si todo salio bien.
+
+Nombre por lo menos 4 letras
+Mayor de 18 años
+que el password minimo 6 caracteres y una mayuscula
+que confirmen el password, que sean iguales
+
+
+*/
+
 class Validators {
+  // Validacion de nombre
+  static String? name(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'El nombre es obligatorio.';
+    }
+
+    // Validar que tenga por lo menos 4 letras
+    if (value.length < 4) {
+      return 'El nombre debe tener al menos 4 letras.';
+    }
+    return null;
+  }
+
+  // Validacion de la edad
+  static String? age(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'La edad es obligatoria.';
+    }
+    // Convertir el valor a entero
+    final age = int.tryParse(value);
+    if (age == null) {
+      return 'Por favor, ingrese una edad válida.';
+    }
+    // Validar que sea mayor de 18 años
+    if (age < 18) {
+      return 'Debes ser mayor de 18 años para registrarte.';
+    }
+    return null;
+  }
+
   //Validacion de correo electrónico
   static String? email(String? value) {
     if (value == null || value.isEmpty) {

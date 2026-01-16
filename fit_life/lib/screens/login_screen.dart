@@ -13,11 +13,19 @@ class _LoginScreenState extends State<LoginScreen> {
       GlobalKey<
         FormState
       >(); // Uso de una clave global para controlar el formulario
+
+  String _password = ''; // Variable para almacenar la contraseña ingresada
+  String _confirmPassword = ''; // Variable para confirmar la contraseña
+
   final _isFormValidNotifier = ValueNotifier<bool>(
     false,
   ); // Notificador o controlador para el estado de validez del botón
   bool _isObscure =
       true; // Variable para controlar la visibilidad de la contraseña
+  final TextEditingController _nameController =
+      TextEditingController(); // Controlador de texto para el campo de nombre
+  final TextEditingController _ageController =
+      TextEditingController(); // Controlador de texto para el campo de edad
   final TextEditingController _emailController =
       TextEditingController(); // Controlador de texto para el campo de email
   final TextEditingController _passwordController =
@@ -37,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               //LOGO O TITULO
               const Icon(
-                Icons.lock_person_rounded,
+                Icons.fitness_center,
                 size: 80,
                 color: Colors.deepPurpleAccent,
               ),
@@ -51,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const Text(
-                'Inicia sesión para continuar',
+                'Registrate para continuar',
                 style: TextStyle(color: Colors.deepPurple),
               ),
               const SizedBox(height: 40.0),
@@ -75,6 +83,35 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: _nameController,
+                        keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                          labelText: 'Nombre Completo',
+                          prefixIcon: Icon(Icons.person_2_rounded),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        // Aquí se utiliza el validador importado desde validators.dart
+                        validator: Validators.name,
+                      ),
+
+                      const SizedBox(height: 20.0),
+                      TextFormField(
+                        controller: _ageController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Edad',
+                          prefixIcon: Icon(Icons.cake_rounded),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: Validators.age,
+                      ),
+
+                      const SizedBox(height: 20.0),
+                      TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
@@ -93,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: _passwordController,
                         obscureText: _isObscure,
                         decoration: InputDecoration(
-                          labelText: 'Contraseña',
+                          labelText: 'Ingrese su Contraseña',
                           prefixIcon: Icon(Icons.lock_outline),
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -113,6 +150,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         validator: Validators.password,
                       ),
+
+                      const SizedBox(height: 20.0),
+                      TextFormField(),
+
                       const SizedBox(height: 30.0),
 
                       //Boton de inicio de sesión
