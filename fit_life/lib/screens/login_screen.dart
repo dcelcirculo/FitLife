@@ -30,6 +30,19 @@ class _LoginScreenState extends State<LoginScreen> {
       TextEditingController(); // Controlador de texto para el campo de email
   final TextEditingController _passwordController =
       TextEditingController(); // Controlador de texto para el campo de contraseña
+  final TextEditingController _confirmPasswordController =
+      TextEditingController(); // Controlador de texto para el campo de confirmación de contraseña
+
+  @override
+  void dispose() {
+    // Liberar recursos
+    _nameController.dispose();
+    _ageController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,10 +162,44 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         validator: Validators.password,
+
+                        // Guardar la contraseña ingresada
+                        onChanged: (value) {
+                          _password = value;
+                        },
                       ),
 
                       const SizedBox(height: 20.0),
-                      TextFormField(),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: _isObscure,
+                        decoration: InputDecoration(
+                          labelText: 'Confirme su Contraseña',
+                          prefixIcon: Icon(Icons.lock_outline),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isObscure = !_isObscure;
+                              });
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) =>
+                            Validators.confirmPassword(_password, value),
+
+                        // Guardar la confirmación de contraseña ingresada
+                        onChanged: (value) {
+                          _confirmPassword = value;
+                        },
+                      ),
 
                       const SizedBox(height: 30.0),
 

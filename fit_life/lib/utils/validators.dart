@@ -73,4 +73,15 @@ class Validators {
     // Si todo esta correcto
     return null;
   }
+
+  // Validacion de confirmacion de contraseña
+  static String? confirmPassword(String? password, String? confirmPassword) {
+    if (confirmPassword == null || confirmPassword.isEmpty) {
+      return 'Por favor, confirma tu contraseña.';
+    }
+    if (password != confirmPassword) {
+      return 'Las contraseñas no coinciden.';
+    }
+    return null;
+  }
 }
